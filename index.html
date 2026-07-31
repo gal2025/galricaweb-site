@@ -2,13 +2,31 @@
 
 <html lang="pt">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-DJQGZJ3VD9"></script>
+<!-- Google Analytics com Consent Mode v2 -->
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+
+  const consentimentoGuardado =
+    localStorage.getItem('analytics_consent') === 'granted'
+      ? 'granted'
+      : 'denied';
+
+  gtag('consent', 'default', {
+    analytics_storage: consentimentoGuardado,
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied'
+  });
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DJQGZJ3VD9"></script>
+
+<script>
+  gtag('js', new Date());
   gtag('config', 'G-DJQGZJ3VD9');
 </script>
 <meta charset="utf-8"/>
@@ -49,6 +67,90 @@
   </script>
 <meta content="1200" property="og:image:width"/>
 <meta content="630" property="og:image:height"/>
+<style>
+  .cookie-banner {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 22px;
+    color: #ffffff;
+    background: #172033;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.28);
+  }
+
+  .cookie-banner[hidden] {
+    display: none;
+  }
+
+  .cookie-banner h2 {
+    margin: 0 0 8px;
+    color: #ffffff;
+    font-size: 1.15rem;
+  }
+
+  .cookie-banner p {
+    margin: 0;
+    color: #e2e8f0;
+    line-height: 1.55;
+  }
+
+  .cookie-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .cookie-button {
+    padding: 11px 18px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 9px;
+  }
+
+  .cookie-accept {
+    color: #ffffff;
+    background: #2563eb;
+  }
+
+  .cookie-reject {
+    color: #ffffff;
+    background: transparent;
+    border-color: #94a3b8;
+  }
+
+  .cookie-settings-button {
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+  }
+
+  @media (max-width: 600px) {
+    .cookie-banner {
+      right: 10px;
+      bottom: 10px;
+      left: 10px;
+      padding: 18px;
+    }
+
+    .cookie-actions,
+    .cookie-button {
+      width: 100%;
+    }
+  }
+</style> 
 </head>
 <body>
 <a class="whatsapp-float" href="https://wa.me/351931164710" rel="noopener noreferrer" target="_blank">
@@ -610,6 +712,82 @@
 <p>© <span id="year"></span> Galriça Web. Todos os direitos reservados.</p>
 </div>
 </footer>
+<div
+  id="cookie-banner"
+  class="cookie-banner"
+  role="dialog"
+  aria-labelledby="cookie-title"
+  aria-describedby="cookie-description"
+  hidden
+>
+  <h2 id="cookie-title">Cookies de estatísticas</h2>
+
+  <p id="cookie-description">
+    Utilizamos o Google Analytics para compreender como o site é utilizado.
+    Com a sua autorização, são usados cookies para obter estatísticas mais
+    completas. Pode aceitar ou recusar.
+  </p>
+
+  <div class="cookie-actions">
+    <button
+      id="accept-analytics"
+      class="cookie-button cookie-accept"
+      type="button"
+    >
+      Aceitar estatísticas
+    </button>
+
+    <button
+      id="reject-analytics"
+      class="cookie-button cookie-reject"
+      type="button"
+    >
+      Recusar
+    </button>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const consentKey = 'analytics_consent';
+    const banner = document.getElementById('cookie-banner');
+    const acceptButton = document.getElementById('accept-analytics');
+    const rejectButton = document.getElementById('reject-analytics');
+    const savedConsent = localStorage.getItem(consentKey);
+
+    function hideBanner() {
+      banner.hidden = true;
+    }
+
+    function showBanner() {
+      banner.hidden = false;
+    }
+
+    function updateAnalyticsConsent(status) {
+      localStorage.setItem(consentKey, status);
+
+      gtag('consent', 'update', {
+        analytics_storage: status,
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied'
+      });
+
+      hideBanner();
+    }
+
+    acceptButton.addEventListener('click', function () {
+      updateAnalyticsConsent('granted');
+    });
+
+    rejectButton.addEventListener('click', function () {
+      updateAnalyticsConsent('denied');
+    });
+
+    if (savedConsent !== 'granted' && savedConsent !== 'denied') {
+      showBanner();
+    }
+  });
+</script>
 <script src="script.js"></script>
 <script crossorigin="anonymous" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" type="module"></script>
 <script crossorigin="anonymous" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79"}' integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" type="module"></script>
